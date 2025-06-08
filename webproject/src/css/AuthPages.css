@@ -1,0 +1,88 @@
+/* AuthStyles.css */
+
+.main-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  background-color: #f3f4f6;
+}
+
+.card {
+  display: flex;
+  width: 100%;
+  max-width: 960px;
+  border-radius: 16px;
+  overflow: hidden;
+  background-color: #fff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  flex-direction: row;
+}
+
+@media (max-width: 960px) {
+  .card {
+    flex-direction: column;
+  }
+}
+
+.form-section {
+  flex: 1;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+@media (max-width: 600px) {
+  .form-section {
+    padding: 24px;
+  }
+}
+
+.banner-section {
+  flex: 1;
+  background: linear-gradient(90deg,rgba(247, 37, 133, 1) 0%, rgba(58, 12, 163, 1) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  padding: 24px;
+}
+
+@media (max-width: 960px) {
+  .banner-section {
+    display: none;
+  }
+}
+
+.text-field .MuiOutlinedInput-root {
+  border-radius: 8px;
+  background-color: #fff;
+}
+
+.submit-button {
+  border-radius: 8px !important;
+  font-weight: 600;
+  padding: 12px 24px !important;
+  background-color: #1976d2;
+  color: #fff;
+}
+
+.submit-button:hover {
+  background-color: #115293;
+}
+
+.alt-button {
+  border-radius: 8px;
+  padding: 12px 24px !important;
+  color: #374151;
+  border-color: #d1d5db;
+  text-transform: none;
+}
+
+.alt-button:hover {
+  background-color: #f3f4f6;
+}

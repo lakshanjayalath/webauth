@@ -1,0 +1,29 @@
+/* .home-container {
+  display: block;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  background-color: #f3f4f6;
+} */
+
+.home-content{
+  display: flex;
+  
+}
+
+@media (max-width: 960px) {
+  .home-content {
+    flex-direction: column;
+
+  }
+}
+.get-started-button{
+  padding: 12px 24px !important;
+  background-color: #3A0CA3 !important;
+  color: #fff !important;
+  border-radius: 8px !important;
+  transition: background-color 0.3s ease !important;
+}
