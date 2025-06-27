@@ -26,3 +26,15 @@ D:\React Projects\webproject99x\webproject_backend\obj\Debug\net9.0\refint\webpr
 D:\React Projects\webproject99x\webproject_backend\obj\Debug\net9.0\webproject_backend.pdb
 D:\React Projects\webproject99x\webproject_backend\obj\Debug\net9.0\webproject_backend.genruntimeconfig.cache
 D:\React Projects\webproject99x\webproject_backend\obj\Debug\net9.0\ref\webproject_backend.dll
+D:\React Projects\webproject99x\webproject_backend\obj\Debug\net9.0\webproject_backend.sourcelink.json
+D:\React Projects\webproject99x\webproject_backend\bin\Debug\net9.0\Microsoft.IdentityModel.Abstractions.dll
+D:\React Projects\webproject99x\webproject_backend\bin\Debug\net9.0\Microsoft.IdentityModel.JsonWebTokens.dll
+D:\React Projects\webproject99x\webproject_backend\bin\Debug\net9.0\Microsoft.IdentityModel.Logging.dll
+D:\React Projects\webproject99x\webproject_backend\bin\Debug\net9.0\Microsoft.IdentityModel.Tokens.dll
+D:\React Projects\webproject99x\webproject_backend\bin\Debug\net9.0\System.IdentityModel.Tokens.Jwt.dll
+D:\React Projects\webproject99x\webproject_backend\bin\Debug\net9.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+D:\React Projects\webproject99x\webproject_backend\bin\Debug\net9.0\Microsoft.IdentityModel.Protocols.dll
+D:\React Projects\webproject99x\webproject_backend\bin\Debug\net9.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+D:\React Projects\webproject99x\webproject_backend\bin\Debug\net9.0\Swashbuckle.AspNetCore.Swagger.dll
+D:\React Projects\webproject99x\webproject_backend\bin\Debug\net9.0\Swashbuckle.AspNetCore.SwaggerGen.dll
+D:\React Projects\webproject99x\webproject_backend\bin\Debug\net9.0\Swashbuckle.AspNetCore.SwaggerUI.dll
