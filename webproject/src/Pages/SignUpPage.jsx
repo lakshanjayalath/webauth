@@ -5,21 +5,23 @@ import {
   Divider, IconButton, InputAdornment, Link
 } from '@mui/material';
 import { Visibility, VisibilityOff, Google, Facebook } from '@mui/icons-material';
+import axios from 'axios';
 import '../css/AuthPages.css';
 
 const SignUpPage = () => {
-  const [fullName, setFullName] = useState('');
+  const [role, setRole] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [keepLoggedIn, setKeepLoggedIn] = useState(false);
   const [errors, setErrors] = useState({});
+  const [apiError, setApiError] = useState('');
   const navigate = useNavigate();
 
   const validate = () => {
     const newErrors = {};
-    if (!fullName.trim()) newErrors.fullName = 'Full Name is required';
+    if (!role.trim()) newErrors.role = 'Role is required';
     if (!email.trim()) newErrors.email = 'Email is required';
     else if (!/\S+@\S+\.\S+/.test(email)) newErrors.email = 'Email is invalid';
     if (!password) newErrors.password = 'Password is required';
@@ -30,11 +32,31 @@ const SignUpPage = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setApiError('');
     if (validate()) {
-      // Simulate API call or add your sign-up logic here
-      navigate('/dashboard');
+      try {
+        // Register user with role
+        await axios.post('http://localhost:5080/api/auth/register', {
+          email,
+          password,
+          role
+        });
+        // Auto-login after registration
+        const loginRes = await axios.post('http://localhost:5080/api/auth/login', {
+          email,
+          password
+        });
+        localStorage.setItem('token', loginRes.data.token);
+        navigate('/dashboard');
+      } catch (error) {
+        if (error.response && error.response.data) {
+          setApiError(error.response.data);
+        } else {
+          setApiError('Registration failed. Please try again.');
+        }
+      }
     }
   };
 
@@ -51,14 +73,14 @@ const SignUpPage = () => {
           <Box component="form" onSubmit={handleSubmit}>
             <TextField
               className="text-field"
-              label="Full Name"
+              label="Role"
               fullWidth
               required
-              value={fullName}
-              onChange={(e) => setFullName(e.target.value)}
+              value={role}
+              onChange={(e) => setRole(e.target.value)}
               sx={{ mb: 2 }}
-              error={!!errors.fullName}
-              helperText={errors.fullName}
+              error={!!errors.role}
+              helperText={errors.role}
             />
             <TextField
               className="text-field"
@@ -112,6 +134,8 @@ const SignUpPage = () => {
               label="Keep me logged in"
               sx={{ mb: 2, color: '#6b7280' }}
             />
+
+            {apiError && <Typography color="error" sx={{ mb: 1 }}>{apiError}</Typography>}
 
             <Button className="submit-button" fullWidth type="submit" variant="contained" sx={{ mb: 2 }}>Sign Up</Button>
 

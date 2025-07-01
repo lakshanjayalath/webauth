@@ -5,8 +5,11 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using System;
-using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using webproject_backend.Data;
+using webproject_backend.Models;
 
 namespace webproject_backend.Controllers
 {
@@ -15,26 +18,23 @@ namespace webproject_backend.Controllers
     public class AuthController : ControllerBase
     {
         private readonly IConfiguration _config;
+        private readonly AppDbContext _context;
 
-        public AuthController(IConfiguration config)
+        public AuthController(IConfiguration config, AppDbContext context)
         {
             _config = config;
+            _context = context;
         }
 
         [HttpPost("login")]
-        public IActionResult Login([FromBody] LoginRequest login)
+        public async Task<IActionResult> Login([FromBody] LoginRequest login)
         {
             try
             {
-                var users = new List<AppUser>
-                {
-                    new AppUser { Email = "admin@email.com", Password = "admin123", Role = "Admin" },
-                    new AppUser { Email = "user@email.com", Password = "user123", Role = "User" }
-                };
-
-                var matchedUser = users.FirstOrDefault(u =>
-                    u.Email.Equals(login.Email, StringComparison.OrdinalIgnoreCase) &&
-                    u.Password == login.Password);
+                var matchedUser = await _context.Users
+                    .FirstOrDefaultAsync(u =>
+                        u.Email.Equals(login.Email, StringComparison.OrdinalIgnoreCase) &&
+                        u.Password == login.Password);
 
                 if (matchedUser == null)
                     return Unauthorized("Invalid email or password.");
@@ -45,6 +45,33 @@ namespace webproject_backend.Controllers
             catch (Exception ex)
             {
                 Console.WriteLine($"Login Error: {ex.Message}");
+                return StatusCode(500, "An error occurred while processing your request.");
+            }
+        }
+
+        [HttpPost("register")]
+        public async Task<IActionResult> Register([FromBody] RegisterRequest register)
+        {
+            try
+            {
+                if (await _context.Users.AnyAsync(u => u.Email == register.Email))
+                    return Conflict("User already exists.");
+
+                var newUser = new AppUser
+                {
+                    Email = register.Email,
+                    Password = register.Password,
+                    Role = register.Role ?? "User"
+                };
+
+                _context.Users.Add(newUser);
+                await _context.SaveChangesAsync();
+
+                return Ok(new { message = "User registered successfully." });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Registration Error: {ex.Message}");
                 return StatusCode(500, "An error occurred while processing your request.");
             }
         }
@@ -82,17 +109,17 @@ namespace webproject_backend.Controllers
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
+        public class RegisterRequest
+        {
+            public string Email { get; set; } = string.Empty;
+            public string Password { get; set; } = string.Empty;
+            public string Role { get; set; } = "User";
+        }
+
         public class LoginRequest
         {
             public string Email { get; set; } = string.Empty;
             public string Password { get; set; } = string.Empty;
-        }
-
-        public class AppUser
-        {
-            public string Email { get; set; } = string.Empty;
-            public string Password { get; set; } = string.Empty;
-            public string Role { get; set; } = string.Empty;
         }
     }
 }
