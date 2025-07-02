@@ -43,14 +43,21 @@ const SignUpPage = () => {
           password,
           role
         });
+
         // Auto-login after registration
-        const loginRes = await axios.post('http://localhost:5080/api/auth/login', {
-          email,
-          password
-        });
-        localStorage.setItem('token', loginRes.data.token);
-        navigate('/dashboard');
+        try {
+          const loginRes = await axios.post('http://localhost:5080/api/auth/login', {
+            email,
+            password
+          });
+          localStorage.setItem('token', loginRes.data.token);
+          navigate('/dashboard');
+        } catch (loginError) {
+          console.error('Auto-login failed:', loginError.response?.data || loginError.message);
+          setApiError('Registered, but login failed. Please try logging in manually.');
+        }
       } catch (error) {
+        console.error('Registration failed:', error.response?.data || error.message);
         if (error.response && error.response.data) {
           setApiError(error.response.data);
         } else {
@@ -59,6 +66,7 @@ const SignUpPage = () => {
       }
     }
   };
+
 
   return (
     <Box className="main-container">

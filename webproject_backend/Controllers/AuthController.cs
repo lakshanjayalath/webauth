@@ -31,13 +31,18 @@ namespace webproject_backend.Controllers
         {
             try
             {
+                Console.WriteLine($"Login attempt: {login.Email} / {login.Password}");
+
                 var matchedUser = await _context.Users
                     .FirstOrDefaultAsync(u =>
-                        u.Email.Equals(login.Email, StringComparison.OrdinalIgnoreCase) &&
+                        u.Email.ToLower() == login.Email.ToLower() &&
                         u.Password == login.Password);
 
                 if (matchedUser == null)
+                {
+                    Console.WriteLine("User not found or password mismatch.");
                     return Unauthorized("Invalid email or password.");
+                }
 
                 var token = GenerateJwtToken(matchedUser);
                 return Ok(new { token });
@@ -54,8 +59,11 @@ namespace webproject_backend.Controllers
         {
             try
             {
-                if (await _context.Users.AnyAsync(u => u.Email == register.Email))
+                if (await _context.Users.AnyAsync(u => u.Email.ToLower() == register.Email.ToLower()))
                     return Conflict("User already exists.");
+
+                if (register.Password.Length < 6)
+                    return BadRequest("Password must be at least 6 characters.");
 
                 var newUser = new AppUser
                 {
@@ -82,12 +90,8 @@ namespace webproject_backend.Controllers
             var issuer = _config["Jwt:Issuer"];
             var audience = _config["Jwt:Audience"];
 
-            if (string.IsNullOrEmpty(key))
-                throw new Exception("JWT Key is missing in configuration.");
-            if (string.IsNullOrEmpty(issuer))
-                throw new Exception("JWT Issuer is missing in configuration.");
-            if (string.IsNullOrEmpty(audience))
-                throw new Exception("JWT Audience is missing in configuration.");
+            if (string.IsNullOrEmpty(key) || string.IsNullOrEmpty(issuer) || string.IsNullOrEmpty(audience))
+                throw new Exception("JWT configuration is incomplete.");
 
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
