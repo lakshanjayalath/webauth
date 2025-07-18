@@ -12,52 +12,69 @@ import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AccountCircle from '@mui/icons-material/AccountCircle';
+import axios from 'axios';
 
-const Header = ({ role = 'Admin', isSignedIn = false }) => {
+const Header = () => {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
+  const [role, setRole] = React.useState(null);
+  const [isSignedIn, setIsSignedIn] = React.useState(false);
+
   const navigate = useNavigate();
 
-  const handleOpenNavMenu = (event) => {
-    setAnchorElNav(event.currentTarget);
-  };
-  const handleOpenUserMenu = (event) => {
-    setAnchorElUser(event.currentTarget);
-  };
-  const handleCloseNavMenu = () => {
-    setAnchorElNav(null);
-  };
-  const handleCloseUserMenu = () => {
-    setAnchorElUser(null);
-  };
-
-  // Role-specific pages
-  const getPages = () => {
-    if (role === 'Admin') {
-      return ['Dashboard', 'Users', 'Settings'];
-    } else if (role === 'User') {
-      return ['Home', 'Profile', 'Support'];
+  React.useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      axios
+        .get('http://localhost:5080/api/auth/me', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then((res) => {
+          setRole(res.data.role);
+          setIsSignedIn(true);
+        })
+        .catch((err) => {
+          console.error('Failed to fetch user:', err);
+          setRole(null);
+          setIsSignedIn(false);
+        });
     } else {
-      return ['Home'];
+      setRole(null);
+      setIsSignedIn(false);
     }
+  }, []);
+
+  const handleOpenNavMenu = (event) => setAnchorElNav(event.currentTarget);
+  const handleOpenUserMenu = (event) => setAnchorElUser(event.currentTarget);
+  const handleCloseNavMenu = () => setAnchorElNav(null);
+  const handleCloseUserMenu = () => setAnchorElUser(null);
+
+  const getPages = () => {
+    if (role === 'Admin') return ['Dashboard', 'Users', 'Settings'];
+    if (role === 'User') return ['Home', 'Profile', 'Support'];
+    return ['Home'];
   };
 
-  // User settings menu
-  const userSettings = isSignedIn
-    ? ['My Profile', 'Logout']
-    : ['Sign In', 'Sign Up'];
+  const userSettings = isSignedIn ? ['My Profile', 'Logout'] : ['Sign In', 'Sign Up'];
 
   const handleUserMenuClick = (setting) => {
     handleCloseUserMenu();
-    if (setting === 'Sign In') {
+    if (setting === 'Sign In') navigate('/signin');
+    else if (setting === 'Sign Up') navigate('/signup');
+    else if (setting === 'Logout') {
+      localStorage.removeItem('token');
+      setRole(null);
+      setIsSignedIn(false);
       navigate('/signin');
-    } else if (setting === 'Sign Up') {
-      navigate('/signup');
+    } else if (setting === 'My Profile') {
+      navigate('/profile');
     }
   };
 
   return (
-    <AppBar style={{ background: 'linear-gradient(to right, #F72585, #3A0CA3)', }} position="static">
+    <AppBar style={{ background: 'linear-gradient(to right, #F72585, #3A0CA3)' }} position="static">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           {/* Desktop Logo */}

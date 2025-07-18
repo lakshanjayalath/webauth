@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Authorization;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -26,6 +27,9 @@ namespace webproject_backend.Controllers
             _context = context;
         }
 
+        // ───────────────────────────────
+        // LOGIN
+        // ───────────────────────────────
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequest login)
         {
@@ -54,6 +58,9 @@ namespace webproject_backend.Controllers
             }
         }
 
+        // ───────────────────────────────
+        // REGISTER
+        // ───────────────────────────────
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterRequest register)
         {
@@ -84,6 +91,25 @@ namespace webproject_backend.Controllers
             }
         }
 
+        // ───────────────────────────────
+        // GET CURRENT USER FROM JWT
+        // ───────────────────────────────
+        [HttpGet("me")]
+        [Authorize]
+        public async Task<IActionResult> GetCurrentUser()
+        {
+            var email = User.FindFirst(ClaimTypes.Email)?.Value;
+            if (email == null) return Unauthorized();
+
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+            if (user == null) return NotFound();
+
+            return Ok(new { email = user.Email, role = user.Role });
+        }
+
+        // ───────────────────────────────
+        // JWT TOKEN GENERATOR
+        // ───────────────────────────────
         private string GenerateJwtToken(AppUser user)
         {
             var key = _config["Jwt:Key"];
@@ -113,6 +139,9 @@ namespace webproject_backend.Controllers
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
+        // ───────────────────────────────
+        // REQUEST MODELS
+        // ───────────────────────────────
         public class RegisterRequest
         {
             public string Email { get; set; } = string.Empty;
