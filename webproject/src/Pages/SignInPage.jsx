@@ -125,7 +125,7 @@ const SignInPage = () => {
                 />
               }
               label="Keep me logged in"
-              sx={{ mb: 2 }}
+              sx={{ mb: 2, color: '#6b7280' }}
             />
 
             <Button
@@ -138,7 +138,7 @@ const SignInPage = () => {
               Sign In
             </Button>
 
-            <Divider sx={{ my: 3 }}>or</Divider>
+            <Divider sx={{ my: 3, color: '#6b7280' }}>or</Divider>
 
             <Button
               className="alt-button"

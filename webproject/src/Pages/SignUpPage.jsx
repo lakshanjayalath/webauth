@@ -147,7 +147,7 @@ const SignUpPage = () => {
 
             <Button className="submit-button" fullWidth type="submit" variant="contained" sx={{ mb: 2 }}>Sign Up</Button>
 
-            <Divider sx={{ my: 3 }}>or</Divider>
+            <Divider sx={{ my: 3, color: '#6b7280' }}>or</Divider>
 
             <Button className="alt-button" fullWidth variant="outlined" startIcon={<Google />}>Sign up with Google</Button>
             <Button className="alt-button" fullWidth variant="outlined" startIcon={<Facebook />} sx={{ mt: 2 }}>Sign up with Facebook</Button>
